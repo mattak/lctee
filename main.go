@@ -11,14 +11,14 @@ import (
 
 func scan(filelist []string, parser lctee.LogcatParser, printer lctee.LogcatPrinter) {
 	if len(filelist) <= 0 {
-		lctee.Filter(nil, parser, printer)
+		lctee.Filter(os.Stdin, parser, printer)
 	} else {
 		for _, file := range filelist {
 			if _, err := os.Stat(file); os.IsNotExist(err) {
 				fmt.Fprintf(os.Stderr, "Not exist file: %s\n", file)
 				os.Exit(1)
 			} else {
-				lctee.Filter(&file, parser, printer)
+				lctee.FilterWithFile(file, parser, printer)
 			}
 		}
 	}
@@ -68,22 +68,22 @@ func TaskDefault(c *cli.Context) {
 		println(getLogHome())
 		os.Exit(0)
 	}
+	withColor := !c.Bool("no-color")
 
 	cmd := exec.Command("adb", "logcat", "-v", "threadtime")
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	err := cmd.Run()
+	stdout, err := cmd.StdoutPipe()
 
 	if err != nil {
 		println(err)
 		os.Exit(1)
 	}
 
+	cmd.Start()
+
 	parser := lctee.LogcatParserThread{""}
-	withColor := !c.Bool("no-color")
 	printer := lctee.LogcatPrinterDefault{withColor, lctee.LogcatFormat{}}
-	scan(nil, parser, printer)
+
+	lctee.FilterWithReader(stdout, parser, printer)
 }
 
 func TaskClear(c *cli.Context) {
