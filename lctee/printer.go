@@ -6,6 +6,14 @@ import (
 	"strings"
 )
 
+const (
+	StringColorVerbose = 35
+	StringColorDebug   = 34
+	StringColorInfo    = 32
+	StringColorWarn    = 33
+	StringColorError   = 31
+)
+
 type LogcatPrinter interface {
 	print(*LogcatFormat)
 }

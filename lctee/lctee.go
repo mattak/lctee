@@ -7,14 +7,6 @@ import (
 	"os"
 )
 
-const (
-	StringColorVerbose = 35
-	StringColorDebug   = 34
-	StringColorInfo    = 32
-	StringColorWarn    = 33
-	StringColorError   = 31
-)
-
 func Filter(filePointer *os.File, parser LogcatParser, printer LogcatPrinter) {
 	scanner := bufio.NewScanner(filePointer)
 
