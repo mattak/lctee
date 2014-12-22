@@ -69,7 +69,7 @@ func TaskDefault(c *cli.Context) {
 		os.Exit(0)
 	}
 
-	cmd := exec.Command("adb", "logcat")
+	cmd := exec.Command("adb", "logcat", "-v", "threadtime")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
